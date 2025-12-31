@@ -1,7 +1,3 @@
-'''
-from capapresentacion.ppersona import PPersona
+from capapresentacion.PPersona import PPersona
 
-persona = PPersona()
-'''
-from capapresentacion.ppersona import PPersona
 PPersona()
