@@ -17,12 +17,10 @@ class PPersona:
             btnGuardar = st.form_submit_button("Guardar", type="primary")
 
         if btnGuardar:
-            # Validaciones
             if not txtnombre.strip() or not txtapellido.strip():
                 st.error("Nombre y apellido son obligatorios")
                 return
 
-            # Preparar datos para insertar
             persona = {
                 "nombre": txtnombre.strip(),
                 "apellido": txtapellido.strip(),
@@ -33,21 +31,20 @@ class PPersona:
             # Insertar en Supabase
             try:
                 resultado = self.lpersona.insertarPersona(persona)
-                if hasattr(resultado, "data"):
+
+                # Si hay datos insertados, mostrar tabla
+                if hasattr(resultado, "data") and resultado.data:
                     st.toast("Registro guardado correctamente")
                     self.mostrarPersonas()
                 else:
-                    st.error(f"Error al guardar: {resultado}")
+                    st.error("No se pudo guardar el registro")
             except Exception as e:
                 st.error(f"Error al guardar en Supabase: {e}")
 
     def mostrarPersonas(self):
         listaPersonas = self.lpersona.mostrarPersonas()
 
-        if isinstance(listaPersonas, list):
-            if len(listaPersonas) > 0:
-                st.dataframe(listaPersonas)
-            else:
-                st.warning("No hay registros.")
+        if isinstance(listaPersonas, list) and len(listaPersonas) > 0:
+            st.dataframe(listaPersonas)
         else:
-            st.error(f"Error al obtener los datos: {listaPersonas}")
+            st.warning("No hay registros para mostrar.")
