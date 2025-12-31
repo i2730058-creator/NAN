@@ -18,7 +18,7 @@ class PPersona:
 
         if btnGuardar:
             if not txtnombre.strip() or not txtapellido.strip():
-                st.error("Nombre y apellido son obligatorios")
+                st.warning("Nombre y apellido son obligatorios")
                 return
 
             persona = {
@@ -30,12 +30,11 @@ class PPersona:
 
             try:
                 self.lpersona.insertarPersona(persona)
-                st.toast("Registro guardado correctamente", icon="👌")
+                st.success("Registro guardado correctamente")
             except Exception as e:
                 st.error(f"Error al guardar en Supabase: {e}")
 
             self.mostrarPersonas()
-
         else:
             self.mostrarPersonas()
 
@@ -45,4 +44,4 @@ class PPersona:
         if isinstance(listaPersonas, list) and len(listaPersonas) > 0:
             st.dataframe(listaPersonas)
         else:
-            st.warning("No hay registros para mostrar.")
+            st.info("No hay registros para mostrar.")
