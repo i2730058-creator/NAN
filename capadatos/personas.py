@@ -17,23 +17,14 @@ class DPersona:
         return self.__ejecutarConsulta(consulta)
 
     def insertarPersona(self, persona: dict):
-        respuesta = self.__db.table(self.__nombreTabla).insert(persona).execute()
-        return respuesta
-
-    def actualizarPersona(self, persona: dict, docidentidad: str):
-        consulta = (
-            self.__db
-            .table(self.__nombreTabla)
-            .update(persona)
-            .eq("docidentidad", docidentidad)
-        )
+        # Solo insertamos las columnas que existen
+        consulta = self.__db.table(self.__nombreTabla).insert(persona)
         return self.__ejecutarConsulta(consulta)
 
-    def eliminarPersona(self, docidentidad: str):
-        consulta = (
-            self.__db
-            .table(self.__nombreTabla)
-            .delete()
-            .eq("docidentidad", docidentidad)
-        )
+    def actualizarPersona(self, persona: dict, id: int):
+        consulta = self.__db.table(self.__nombreTabla).update(persona).eq("id", id)
+        return self.__ejecutarConsulta(consulta)
+
+    def eliminarPersona(self, id: int):
+        consulta = self.__db.table(self.__nombreTabla).delete().eq("id", id)
         return self.__ejecutarConsulta(consulta)
