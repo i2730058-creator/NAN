@@ -18,21 +18,30 @@ class PPersona:
             btnGuardar = st.form_submit_button("Guardar", type="primary")
 
         if btnGuardar:
+            # Validaciones de campos obligatorios
+            if not txtnombre.strip() or not txtapellido.strip():
+                st.error("Nombre y apellido son obligatorios")
+                return
+
+            # Preparar datos para insertar
             persona = {
-                "nombre": txtnombre,
-                "apellido": txtapellido,
-                "email": txtemail,
-                "fecha_ingreso": txtfecha.isoformat(),
-                "salario": txtsalario
+                "nombre": txtnombre.strip(),
+                "apellido": txtapellido.strip(),
+                "email": txtemail.strip() if txtemail else None,
+                "fecha_ingreso": txtfecha.isoformat() if txtfecha else None,
+                "salario": float(txtsalario)
             }
 
-            resultado = self.lpersona.insertarPersona(persona)
-
-            if hasattr(resultado, "data"):
-                st.toast("Registro guardado correctamente")
-                self.mostrarPersonas()
-            else:
-                st.error(f"Error al guardar: {resultado}")
+            # Intentar insertar en Supabase
+            try:
+                resultado = self.lpersona.insertarPersona(persona)
+                if hasattr(resultado, "data"):
+                    st.toast("Registro guardado correctamente")
+                    self.mostrarPersonas()
+                else:
+                    st.error(f"Error al guardar: {resultado}")
+            except Exception as e:
+                st.error(f"Error al guardar en Supabase: {e}")
 
     def mostrarPersonas(self):
         listaPersonas = self.lpersona.mostrarPersonas()
