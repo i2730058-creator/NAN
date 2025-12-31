@@ -7,8 +7,10 @@ class DPersona:
 
     def __ejecutarConsulta(self, consulta):
         try:
-            resultado = consulta.execute().data
-            return resultado
+            resultado = consulta.execute()
+            if hasattr(resultado, "data"):
+                return resultado.data
+            return []
         except Exception as e:
             return f"Error: {e}"
 
@@ -17,9 +19,14 @@ class DPersona:
         return self.__ejecutarConsulta(consulta)
 
     def insertarPersona(self, persona: dict):
-        # Solo insertamos las columnas que existen
-        consulta = self.__db.table(self.__nombreTabla).insert(persona)
-        return self.__ejecutarConsulta(consulta)
+        try:
+            consulta = self.__db.table(self.__nombreTabla).insert(persona)
+            resultado = consulta.execute()
+            if hasattr(resultado, "data"):
+                return True
+            return False
+        except Exception as e:
+            return False
 
     def actualizarPersona(self, persona: dict, id: int):
         consulta = self.__db.table(self.__nombreTabla).update(persona).eq("id", id)
