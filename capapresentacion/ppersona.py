@@ -19,20 +19,20 @@ class PPersona:
         if btnGuardar:
             if not txtnombre.strip() or not txtapellido.strip():
                 st.warning("Nombre y apellido son obligatorios")
-                return
+            else:
+                persona = {
+                    "nombre": txtnombre.strip(),
+                    "apellido": txtapellido.strip(),
+                    "email": txtemail.strip() if txtemail else None,
+                    "salario": float(txtsalario)
+                }
 
-            persona = {
-                "nombre": txtnombre.strip(),
-                "apellido": txtapellido.strip(),
-                "email": txtemail.strip() if txtemail else None,
-                "salario": float(txtsalario)
-            }
+                resultado = self.lpersona.insertarPersona(persona)
 
-            try:
-                self.lpersona.insertarPersona(persona)
-                st.success("Registro guardado correctamente")
-            except Exception as e:
-                st.error(f"Error al guardar en Supabase: {e}")
+                if resultado is True:
+                    st.success("Registro guardado correctamente")
+                else:
+                    st.error("No se pudo guardar el registro")
 
             self.mostrarPersonas()
         else:
