@@ -1,17 +1,21 @@
-from capadatos.DPersona import DPersona
+from capadatos.personas import DPersona
 
 class LPersona:
     def __init__(self):
-        self.__dpersona = DPersona()
+        self.dpersona = DPersona()
+        self.persona = None
 
     def mostrarPersonas(self):
-        return self.__dpersona.mostrarPersonas()
+        return self.dpersona.mostrarPersonas()
 
     def insertarPersona(self, persona: dict):
-        return self.__dpersona.insertarPersona(persona)
+        return self.dpersona.insertarPersona(persona)
 
     def actualizarPersona(self, persona: dict, docidentidad: str):
-        return self.__dpersona.actualizarPersona(persona, docidentidad)
+        return self.dpersona.actualizarPersona(persona, docidentidad)
 
     def eliminarPersona(self, docidentidad: str):
-        return self.__dpersona.eliminarPersona(docidentidad)
+        return self.dpersona.eliminarPersona(docidentidad)
+
+    def setPersona(self, persona: dict):
+        self.persona = persona
