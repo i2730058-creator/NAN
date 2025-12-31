@@ -8,7 +8,7 @@ class DPersona:
     def __ejecutarConsulta(self, consulta):
         try:
             resultado = consulta.execute()
-            if hasattr(resultado, "data"):
+            if getattr(resultado, "data", None) is not None:
                 return resultado.data
             return []
         except Exception as e:
@@ -22,7 +22,7 @@ class DPersona:
         try:
             consulta = self.__db.table(self.__nombreTabla).insert(persona)
             resultado = consulta.execute()
-            if hasattr(resultado, "data"):
+            if getattr(resultado, "data", None) is not None:
                 return True
             return False
         except Exception as e:
