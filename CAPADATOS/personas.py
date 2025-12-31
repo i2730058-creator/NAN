@@ -1,29 +1,39 @@
-from conexion import conexionDB
+from conexion import supabase
 
 class DPersona:
     def __init__(self):
-        self.__db = conexionDB().conexionsupabase()
-        self.__nombreTabla = 'empleados'
+        self.__db = supabase
+        self.__nombreTabla = "empleados"
 
     def __ejecutarConsulta(self, consulta):
         try:
             resultado = consulta.execute().data
             return resultado
         except Exception as e:
-            return f'Error: {e}'
+            return f"Error: {e}"
 
     def mostrarPersonas(self):
-        consulta = self.__db.table(self.__nombreTabla).select('*')
+        consulta = self.__db.table(self.__nombreTabla).select("*")
         return self.__ejecutarConsulta(consulta)
 
-    def insertarpersona(self, persona: dict):
+    def insertarPersona(self, persona: dict):
         consulta = self.__db.table(self.__nombreTabla).insert(persona)
         return self.__ejecutarConsulta(consulta)
 
-    def actualizarpersona(self, persona: dict, docidentidad: str):
-        consulta = self.__db.table(self.__nombreTabla).update(persona).eq('docidentidad', docidentidad)
+    def actualizarPersona(self, persona: dict, docidentidad: str):
+        consulta = (
+            self.__db
+            .table(self.__nombreTabla)
+            .update(persona)
+            .eq("docidentidad", docidentidad)
+        )
         return self.__ejecutarConsulta(consulta)
 
     def eliminarPersona(self, docidentidad: str):
-        consulta = self.__db.table(self.__nombreTabla).delete().eq('docidentidad', docidentidad)
+        consulta = (
+            self.__db
+            .table(self.__nombreTabla)
+            .delete()
+            .eq("docidentidad", docidentidad)
+        )
         return self.__ejecutarConsulta(consulta)
