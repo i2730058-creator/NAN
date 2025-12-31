@@ -1,5 +1,5 @@
 import streamlit as st
-from capalogica.LPersona import LPersona
+from capalogica.lPersona import LPersona
 
 class PPersona:
     def __init__(self):
