@@ -8,7 +8,6 @@ class LPersona:
         return self.dpersona.mostrarPersonas()
 
     def insertarPersona(self, persona: dict):
-        # Solo pasa el diccionario tal cual
         return self.dpersona.insertarPersona(persona)
 
     def actualizarPersona(self, persona: dict, id: int):
