@@ -28,18 +28,16 @@ class PPersona:
                 "salario": float(txtsalario)
             }
 
-            # Insertar en Supabase
             try:
-                resultado = self.lpersona.insertarPersona(persona)
-
-                # Si hay datos insertados, mostrar tabla
-                if hasattr(resultado, "data") and resultado.data:
-                    st.toast("Registro guardado correctamente")
-                    self.mostrarPersonas()
-                else:
-                    st.error("No se pudo guardar el registro")
+                self.lpersona.insertarPersona(persona)
+                st.toast("Registro guardado correctamente", icon="👌")
             except Exception as e:
                 st.error(f"Error al guardar en Supabase: {e}")
+
+            self.mostrarPersonas()
+
+        else:
+            self.mostrarPersonas()
 
     def mostrarPersonas(self):
         listaPersonas = self.lpersona.mostrarPersonas()
