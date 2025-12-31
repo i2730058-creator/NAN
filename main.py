@@ -1,3 +1,3 @@
-from capapresentacion.PPersona import PPersona
+from capapresentacion.ppersona import PPersona
 
 PPersona()
