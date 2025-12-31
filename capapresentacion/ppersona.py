@@ -29,7 +29,7 @@ class PPersona:
 
                 resultado = self.lpersona.insertarPersona(persona)
 
-                if resultado is True:
+                if resultado:
                     st.success("Registro guardado correctamente")
                 else:
                     st.error("No se pudo guardar el registro")
@@ -41,7 +41,7 @@ class PPersona:
     def mostrarPersonas(self):
         listaPersonas = self.lpersona.mostrarPersonas()
 
-        if isinstance(listaPersonas, list) and len(listaPersonas) > 0:
+        if listaPersonas and isinstance(listaPersonas, list) and len(listaPersonas) > 0:
             st.dataframe(listaPersonas)
         else:
             st.info("No hay registros para mostrar.")
