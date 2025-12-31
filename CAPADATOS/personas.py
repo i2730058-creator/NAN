@@ -17,8 +17,8 @@ class DPersona:
         return self.__ejecutarConsulta(consulta)
 
     def insertarPersona(self, persona: dict):
-        consulta = self.__db.table(self.__nombreTabla).insert(persona)
-        return self.__ejecutarConsulta(consulta)
+        respuesta = self.__db.table(self.__nombreTabla).insert(persona).execute()
+        return respuesta
 
     def actualizarPersona(self, persona: dict, docidentidad: str):
         consulta = (
