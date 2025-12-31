@@ -8,11 +8,9 @@ class DPersona:
     def __ejecutarConsulta(self, consulta):
         try:
             resultado = consulta.execute()
-            if getattr(resultado, "data", None) is not None:
-                return resultado.data
+            return resultado.data if resultado.data else []
+        except Exception:
             return []
-        except Exception as e:
-            return f"Error: {e}"
 
     def mostrarPersonas(self):
         consulta = self.__db.table(self.__nombreTabla).select("*")
@@ -20,12 +18,9 @@ class DPersona:
 
     def insertarPersona(self, persona: dict):
         try:
-            consulta = self.__db.table(self.__nombreTabla).insert(persona)
-            resultado = consulta.execute()
-            if getattr(resultado, "data", None) is not None:
-                return True
-            return False
-        except Exception as e:
+            self.__db.table(self.__nombreTabla).insert(persona).execute()
+            return True
+        except Exception:
             return False
 
     def actualizarPersona(self, persona: dict, id: int):
