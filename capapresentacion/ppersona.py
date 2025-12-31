@@ -13,12 +13,11 @@ class PPersona:
             txtnombre = st.text_input("Nombre")
             txtapellido = st.text_input("Apellido")
             txtemail = st.text_input("Email")
-            txtfecha = st.date_input("Fecha de ingreso")
             txtsalario = st.number_input("Salario", min_value=0.0)
             btnGuardar = st.form_submit_button("Guardar", type="primary")
 
         if btnGuardar:
-            # Validaciones de campos obligatorios
+            # Validaciones
             if not txtnombre.strip() or not txtapellido.strip():
                 st.error("Nombre y apellido son obligatorios")
                 return
@@ -28,11 +27,10 @@ class PPersona:
                 "nombre": txtnombre.strip(),
                 "apellido": txtapellido.strip(),
                 "email": txtemail.strip() if txtemail else None,
-                "fecha_ingreso": txtfecha.isoformat() if txtfecha else None,
                 "salario": float(txtsalario)
             }
 
-            # Intentar insertar en Supabase
+            # Insertar en Supabase
             try:
                 resultado = self.lpersona.insertarPersona(persona)
                 if hasattr(resultado, "data"):
