@@ -8,6 +8,7 @@ class LPersona:
         return self.dpersona.mostrarPersonas()
 
     def insertarPersona(self, persona):
+        # Validación simple: que no estén vacíos los campos obligatorios
         if persona.get("nombre") and persona.get("apellido") and persona.get("email"):
             return self.dpersona.insertarPersona(persona)
         return False
