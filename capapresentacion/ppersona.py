@@ -23,17 +23,6 @@ class PPersona:
                 "correo": txtcorreo,
                 "salario": float(txtsalario)
             }
+            self.lpersona.insertarPersona(persona)
 
-            if self.lpersona.insertarPersona(persona):
-                st.success("Registro guardado correctamente")
-            else:
-                st.error("No se pudo guardar el registro")
-
-        self.mostrarPersonas()
-
-    def mostrarPersonas(self):
-        listaPersonas = self.lpersona.mostrarPersonas()
-        if listaPersonas:
-            st.dataframe(listaPersonas)
-        else:
-            st.info("No hay registros para mostrar")
+        st.dataframe(self.lpersona.mostrarPersonas())
