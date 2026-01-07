@@ -2,39 +2,33 @@ from conexion import supabase
 
 class DPersona:
     def __init__(self):
-        self.__db = supabase
-        self.__schema = "public"
-        self.__nombreTabla = "empleados"
+        self.db = supabase
+        self.tabla = "empleados"
 
     def mostrarPersonas(self):
         try:
-            return (
-                self.__db
-                .schema(self.__schema)
-                .table(self.__nombreTabla)
-                .select("*")
-                .execute()
-                .data
-            )
+            res = self.db.table(self.tabla).select(
+                "id, nombre, apellido, email, salario"
+            ).execute()
+            return res.data
         except Exception:
             return []
 
     def insertarPersona(self, persona):
         try:
-            datos = {
-                "nombre": str(persona.get("nombre", "")),
-                "apellido": str(persona.get("apellido", "")),
-                "email": str(persona.get("email", "")),
-                "salario": float(persona.get("salario", 0))
-            }
-            self.__db.table(self.__nombreTabla).schema(self.__schema).insert(datos).execute()
+            self.db.table(self.tabla).insert({
+                "nombre": persona["nombre"],
+                "apellido": persona["apellido"],
+                "email": persona["email"],
+                "salario": persona["salario"]
+            }).execute()
             return True
         except Exception:
             return False
 
     def eliminarPersona(self, id):
         try:
-            self.__db.table(self.__nombreTabla).schema(self.__schema).delete().eq("id", id).execute()
+            self.db.table(self.tabla).delete().eq("id", id).execute()
             return True
         except Exception:
             return False
