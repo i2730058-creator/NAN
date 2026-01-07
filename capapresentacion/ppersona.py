@@ -26,7 +26,7 @@ class PPersona:
 
             if self.lpersona.insertarPersona(persona):
                 st.success("Registro guardado correctamente")
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error("No se pudo guardar el registro")
 
