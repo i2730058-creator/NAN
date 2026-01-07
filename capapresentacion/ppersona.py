@@ -11,20 +11,18 @@ class PPersona:
 
         with st.form("formulario_registro"):
             txtnombre = st.text_input("Nombre")
-            txtapellido = st.text_input("Apellido")
-            txtemail = st.text_input("Email")
-            txtsalario = st.number_input("Salario", min_value=0.0)
+            txtapellidos = st.text_input("Apellidos")
+            txtcorreo = st.text_input("Correo")
             btnGuardar = st.form_submit_button("Guardar", type="primary")
 
         if btnGuardar:
-            if not txtnombre.strip() or not txtapellido.strip():
-                st.warning("Nombre y apellido son obligatorios")
+            if txtnombre == "" or txtapellidos == "" or txtcorreo == "":
+                st.warning("Todos los campos son obligatorios")
             else:
                 persona = {
-                    "nombre": txtnombre.strip(),
-                    "apellido": txtapellido.strip(),
-                    "email": txtemail.strip() if txtemail else None,
-                    "salario": float(txtsalario)
+                    "correo": txtcorreo,
+                    "nombre": txtnombre,
+                    "apellidos": txtapellidos
                 }
 
                 resultado = self.lpersona.insertarPersona(persona)
@@ -32,16 +30,14 @@ class PPersona:
                 if resultado:
                     st.success("Registro guardado correctamente")
                 else:
-                    st.error("No se pudo guardar el registro")
+                    st.error("Datos inválidos. Verifique la información ingresada.")
 
-            self.mostrarPersonas()
-        else:
-            self.mostrarPersonas()
+        self.mostrarPersonas()
 
     def mostrarPersonas(self):
         listaPersonas = self.lpersona.mostrarPersonas()
 
-        if listaPersonas and isinstance(listaPersonas, list) and len(listaPersonas) > 0:
+        if listaPersonas and len(listaPersonas) > 0:
             st.dataframe(listaPersonas)
         else:
             st.info("No hay registros para mostrar.")
