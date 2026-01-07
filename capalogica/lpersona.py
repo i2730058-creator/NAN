@@ -8,12 +8,7 @@ class LPersona:
         return self.dpersona.mostrarPersonas()
 
     def insertarPersona(self, persona):
-        if (
-            persona.get("nombre") and
-            persona.get("apellido") and
-            persona.get("email") and
-            persona.get("salario", 0) >= 1000
-        ):
+        if persona.get("nombre") and persona.get("apellido") and persona.get("email"):
             return self.dpersona.insertarPersona(persona)
         return False
 
