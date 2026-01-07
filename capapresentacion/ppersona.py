@@ -16,10 +16,10 @@ class PPersona:
             col1, col2 = st.columns(2)
             with col1:
                 txtnombre = st.text_input("Nombre")
-                txtapellido = st.text_input("Apellido (puede ser dos palabras)")
+                txtapellido = st.text_input("Apellido (dos palabras permitidas)")
             with col2:
                 txtemail = st.text_input("Correo electrónico")
-                txtsalario = st.number_input("Salario")
+                txtsalario = st.number_input("Salario", min_value=0.0)
             btnGuardar = st.form_submit_button("Guardar", type="primary")
 
         if btnGuardar:
