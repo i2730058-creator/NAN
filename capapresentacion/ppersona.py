@@ -15,18 +15,18 @@ class PPersona:
             col1, col2 = st.columns(2)
             with col1:
                 txtnombre = st.text_input("Nombre")
-                txtapellido = st.text_input("Apellido (AMBOS)")
+                txtapellido = st.text_input("Apellido")
             with col2:
                 txtemail = st.text_input("Correo electrónico")
-                txtsalario = st.number_input("Salario", min_value=1000.0)
+                txtsalario = st.number_input("Salario")
             btnGuardar = st.form_submit_button("Guardar", type="primary")
 
         if btnGuardar:
             persona = {
                 "nombre": txtnombre.strip(),
-                "apellido": txtapellido.strip(),  # columna correcta
+                "apellido": txtapellido.strip(),
                 "email": txtemail.strip(),
-                "salario": int(txtsalario)
+                "salario": float(txtsalario)
             }
             resultado = self.lpersona.insertarPersona(persona)
             if resultado:
