@@ -26,9 +26,9 @@ class DPersona:
         try:
             datos = {
                 "nombre": persona.get("nombre", ""),
-                "apellido": persona.get("apellido", ""),  # ahora columna correcta
+                "apellido": persona.get("apellido", ""),
                 "email": persona.get("email", ""),
-                "salario": int(persona.get("salario", 1000))  # asegurar tipo entero
+                "salario": float(persona.get("salario", 0))
             }
             self.__db.table(self.__nombreTabla).schema(self.__schema).insert(datos).execute()
             return True
