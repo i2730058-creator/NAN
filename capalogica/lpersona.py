@@ -10,20 +10,33 @@ class LPersona:
 
     def _datos_validos(self, p):
         try:
-            return (
-                p["salario"] >= 1000
-                and re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', p["correo"])
-                and re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$', p["nombre"])
-                and re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$', p["apellidos"])
-            )
+            if p["salario"] < 1000:
+                return False
+
+            if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', p["correo"]):
+                return False
+
+            if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$', p["nombre"]):
+                return False
+
+            if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$', p["apellidos"]):
+                return False
+
+            return True
         except Exception:
             return False
 
     def insertarPersona(self, persona):
-        return self._datos_validos(persona) and self.dpersona.insertarPersona(persona)
+        if self._datos_validos(persona):
+            return self.dpersona.insertarPersona(persona)
+        return False
 
     def actualizarPersona(self, persona, id):
-        return id > 0 and self._datos_validos(persona) and self.dpersona.actualizarPersona(persona, id)
+        if id > 0 and self._datos_validos(persona):
+            return self.dpersona.actualizarPersona(persona, id)
+        return False
 
     def eliminarPersona(self, id):
-        return id > 0 and self.dpersona.eliminarPersona(id)
+        if id > 0:
+            return self.dpersona.eliminarPersona(id)
+        return False
