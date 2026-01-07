@@ -7,7 +7,7 @@ class PPersona:
         self.construir()
 
     def construir(self):
-        st.title("Registro de Pacientes")
+        st.title("Registro de Empleados")
 
         with st.form("form_registro"):
             nombre = st.text_input("Nombre")
