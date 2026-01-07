@@ -4,7 +4,7 @@ class DPersona:
     def __init__(self):
         self.__db = supabase
         self.__nombreTabla = "empleados"
-        self.__camposPermitidos = {"correo", "nombre", "apellidos"}
+        self.__camposPermitidos = {"correo", "nombre", "apellidos", "salario"}
 
     def __ejecutarConsulta(self, consulta):
         try:
@@ -14,7 +14,9 @@ class DPersona:
             return []
 
     def mostrarPersonas(self):
-        consulta = self.__db.table(self.__nombreTabla).select("id, correo, nombre, apellidos")
+        consulta = self.__db.table(self.__nombreTabla).select(
+            "id, correo, nombre, apellidos, salario"
+        )
         return self.__ejecutarConsulta(consulta)
 
     def insertarPersona(self, persona: dict):
@@ -25,7 +27,13 @@ class DPersona:
                 if clave in self.__camposPermitidos
             }
 
-            if len(datos_limpios) != 3:
+            if "correo" not in datos_limpios:
+                return False
+            if "nombre" not in datos_limpios:
+                return False
+            if "apellidos" not in datos_limpios:
+                return False
+            if "salario" not in datos_limpios:
                 return False
 
             self.__db.table(self.__nombreTabla).insert(datos_limpios).execute()
