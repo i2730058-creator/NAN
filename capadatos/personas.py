@@ -3,6 +3,7 @@ from conexion import supabase
 class DPersona:
     def __init__(self):
         self.__db = supabase
+        self.__schema = "public"
         self.__nombreTabla = "empleados"
         self.__camposPermitidos = ["nombre", "apellidos", "salario"]
 
@@ -13,8 +14,11 @@ class DPersona:
             return []
 
     def mostrarPersonas(self):
-        consulta = self.__db.table(self.__nombreTabla).select(
-            "id, nombre, apellidos, salario"
+        consulta = (
+            self.__db
+            .schema(self.__schema)
+            .table(self.__nombreTabla)
+            .select("id, nombre, apellidos, salario")
         )
         return self.__ejecutarConsulta(consulta)
 
@@ -26,7 +30,13 @@ class DPersona:
                     datos[campo] = persona[campo]
 
             if "nombre" in datos and "apellidos" in datos and "salario" in datos:
-                self.__db.table(self.__nombreTabla).insert(datos).execute()
+                (
+                    self.__db
+                    .schema(self.__schema)
+                    .table(self.__nombreTabla)
+                    .insert(datos)
+                    .execute()
+                )
                 return True
 
             return False
@@ -35,7 +45,14 @@ class DPersona:
 
     def eliminarPersona(self, id):
         try:
-            self.__db.table(self.__nombreTabla).delete().eq("id", id).execute()
+            (
+                self.__db
+                .schema(self.__schema)
+                .table(self.__nombreTabla)
+                .delete()
+                .eq("id", id)
+                .execute()
+            )
             return True
         except Exception:
             return False
