@@ -4,47 +4,29 @@ class DPersona:
     def __init__(self):
         self.__db = supabase
         self.__nombreTabla = "empleados"
-        self.__camposPermitidos = ["correo", "nombre", "apellidos", "salario"]
+        self.__camposPermitidos = ["nombre", "apellidos", "salario"]
 
     def __ejecutarConsulta(self, consulta):
         try:
-            resultado = consulta.execute()
-            return resultado.data
+            return consulta.execute().data
         except Exception:
             return []
 
     def mostrarPersonas(self):
         consulta = self.__db.table(self.__nombreTabla).select(
-            "id, correo, nombre, apellidos, salario"
+            "id, nombre, apellidos, salario"
         )
         return self.__ejecutarConsulta(consulta)
 
     def insertarPersona(self, persona):
         try:
             datos = {}
-
             for campo in self.__camposPermitidos:
                 if campo in persona:
                     datos[campo] = persona[campo]
 
-            if "correo" in datos and "nombre" in datos and "apellidos" in datos and "salario" in datos:
+            if "nombre" in datos and "apellidos" in datos and "salario" in datos:
                 self.__db.table(self.__nombreTabla).insert(datos).execute()
-                return True
-
-            return False
-        except Exception:
-            return False
-
-    def actualizarPersona(self, persona, id):
-        try:
-            datos = {}
-
-            for campo in self.__camposPermitidos:
-                if campo in persona:
-                    datos[campo] = persona[campo]
-
-            if datos:
-                self.__db.table(self.__nombreTabla).update(datos).eq("id", id).execute()
                 return True
 
             return False
