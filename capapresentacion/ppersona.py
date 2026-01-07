@@ -15,7 +15,7 @@ class PPersona:
             col1, col2 = st.columns(2)
             with col1:
                 txtnombre = st.text_input("Nombre")
-                txtapellidos = st.text_input("Apellidos (dos apellidos juntos)")
+                txtapellidos = st.text_input("Apellidos")
             with col2:
                 txtemail = st.text_input("Correo electrónico")
                 txtsalario = st.number_input("Salario", min_value=1000.0)
