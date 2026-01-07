@@ -19,4 +19,3 @@ class LPersona:
 
     def eliminarPersona(self, id):
         return self.dpersona.eliminarPersona(id)
-
