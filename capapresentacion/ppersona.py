@@ -11,16 +11,16 @@ class PPersona:
 
         with st.form("formulario_registro"):
             txtnombre = st.text_input("Nombre")
-            txtapellidos = st.text_input("Apellidos")
-            txtcorreo = st.text_input("Correo")
+            txtapellido1 = st.text_input("Apellido 1")
+            txtapellido2 = st.text_input("Apellido 2")
             txtsalario = st.number_input("Salario", min_value=1000.0)
             btnGuardar = st.form_submit_button("Guardar", type="primary")
 
         if btnGuardar:
             persona = {
                 "nombre": txtnombre,
-                "apellidos": txtapellidos,
-                "correo": txtcorreo,
+                "apellido1": txtapellido1,
+                "apellido2": txtapellido2,
                 "salario": float(txtsalario)
             }
             self.lpersona.insertarPersona(persona)
