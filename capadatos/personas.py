@@ -27,7 +27,8 @@ class DPersona:
             datos = {
                 "nombre": persona.get("nombre", ""),
                 "apellido": persona.get("apellidos", ""),
-                "email": persona.get("email", "")
+                "email": persona.get("email", ""),
+                "salario": persona.get("salario", 1000)
             }
             self.__db.table(self.__nombreTabla).schema(self.__schema).insert(datos).execute()
             return True
