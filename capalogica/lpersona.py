@@ -16,7 +16,7 @@ class LPersona:
             return (
                 partes[0].isalpha()
                 and partes[1].isalpha()
-                and partes[2] == partes[2]  # fuerza error si hay más de 2
+                and partes[2] == partes[2]
             )
         except IndexError:
             return False
