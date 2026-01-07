@@ -30,6 +30,6 @@ class PPersona:
             else:
                 st.error("No se pudo guardar el registro")
 
-        st.subheader("Tabla de Pacientes")
+        st.subheader("Tabla de Empleados")
         datos = self.lpersona.mostrarPersonas()
         st.dataframe(datos, use_container_width=True)
