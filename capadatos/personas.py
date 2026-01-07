@@ -4,12 +4,12 @@ class DPersona:
     def __init__(self):
         self.__db = supabase
         self.__nombreTabla = "empleados"
-        self.__camposPermitidos = {"correo", "nombre", "apellidos", "salario"}
+        self.__camposPermitidos = ["correo", "nombre", "apellidos", "salario"]
 
     def __ejecutarConsulta(self, consulta):
         try:
             resultado = consulta.execute()
-            return resultado.data if resultado.data else []
+            return resultado.data
         except Exception:
             return []
 
@@ -19,50 +19,41 @@ class DPersona:
         )
         return self.__ejecutarConsulta(consulta)
 
-    def insertarPersona(self, persona: dict):
+    def insertarPersona(self, persona):
         try:
-            datos_limpios = {
-                clave: persona[clave]
-                for clave in persona
-                if clave in self.__camposPermitidos
-            }
+            datos = {}
 
-            if "correo" not in datos_limpios:
-                return False
-            if "nombre" not in datos_limpios:
-                return False
-            if "apellidos" not in datos_limpios:
-                return False
-            if "salario" not in datos_limpios:
-                return False
+            for campo in self.__camposPermitidos:
+                if campo in persona:
+                    datos[campo] = persona[campo]
 
-            self.__db.table(self.__nombreTabla).insert(datos_limpios).execute()
-            return True
+            if "correo" in datos and "nombre" in datos and "apellidos" in datos and "salario" in datos:
+                self.__db.table(self.__nombreTabla).insert(datos).execute()
+                return True
+
+            return False
         except Exception:
             return False
 
-    def actualizarPersona(self, persona: dict, id: int):
+    def actualizarPersona(self, persona, id):
         try:
-            datos_limpios = {
-                clave: persona[clave]
-                for clave in persona
-                if clave in self.__camposPermitidos
-            }
+            datos = {}
 
-            if not datos_limpios:
-                return False
+            for campo in self.__camposPermitidos:
+                if campo in persona:
+                    datos[campo] = persona[campo]
 
-            consulta = (
-                self.__db
-                .table(self.__nombreTabla)
-                .update(datos_limpios)
-                .eq("id", id)
-            )
-            self.__ejecutarConsulta(consulta)
-            return True
+            if datos:
+                self.__db.table(self.__nombreTabla).update(datos).eq("id", id).execute()
+                return True
+
+            return False
         except Exception:
             return False
 
-    def eliminarPersona(self, id: int):
-        consulta = self.__db.table(self.__nombreTabla).delete().eq("id", id)
-        return self.__ejecutarConsulta(consulta)
+    def eliminarPersona(self, id):
+        try:
+            self.__db.table(self.__nombreTabla).delete().eq("id", id).execute()
+            return True
+        except Exception:
+            return False
