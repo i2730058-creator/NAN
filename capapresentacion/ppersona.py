@@ -25,4 +25,9 @@ class PPersona:
             }
             self.lpersona.insertarPersona(persona)
 
+        st.subheader("Eliminar persona")
+        id_eliminar = st.number_input("ID", min_value=1, step=1)
+        if st.button("Eliminar"):
+            self.lpersona.eliminarPersona(int(id_eliminar))
+
         st.dataframe(self.lpersona.mostrarPersonas())
