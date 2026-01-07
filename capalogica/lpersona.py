@@ -10,7 +10,7 @@ class LPersona:
     def insertarPersona(self, persona):
         if (
             persona.get("nombre") and
-            persona.get("apellidos") and
+            persona.get("apellido") and
             persona.get("email") and
             persona.get("salario", 0) >= 1000
         ):
