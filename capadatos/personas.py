@@ -6,28 +6,25 @@ class DPersona:
         self.__schema = "public"
         self.__nombreTabla = "empleados"
 
-    def __ejecutarConsulta(self, consulta):
+    def mostrarPersonas(self):
         try:
-            return consulta.execute().data
+            return (
+                self.__db
+                .schema(self.__schema)
+                .table(self.__nombreTabla)
+                .select("*")
+                .execute()
+                .data
+            )
         except Exception:
             return []
-
-    def mostrarPersonas(self):
-        return (
-            self.__db
-            .schema(self.__schema)
-            .table(self.__nombreTabla)
-            .select("*")
-            .execute()
-            .data
-        )
 
     def insertarPersona(self, persona):
         try:
             datos = {
-                "nombre": persona.get("nombre", ""),
-                "apellido": persona.get("apellido", ""),
-                "email": persona.get("email", ""),
+                "nombre": str(persona.get("nombre", "")),
+                "apellido": str(persona.get("apellido", "")),
+                "email": str(persona.get("email", "")),
                 "salario": float(persona.get("salario", 0))
             }
             self.__db.table(self.__nombreTabla).schema(self.__schema).insert(datos).execute()
