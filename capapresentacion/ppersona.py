@@ -15,7 +15,7 @@ class PPersona:
             col1, col2 = st.columns(2)
             with col1:
                 txtnombre = st.text_input("Nombre")
-                txtapellidos = st.text_input("Apellidos")
+                txtapellido = st.text_input("Apellido (dos apellidos juntos separados por espacio)")
             with col2:
                 txtemail = st.text_input("Correo electrónico")
                 txtsalario = st.number_input("Salario", min_value=1000.0)
@@ -24,9 +24,9 @@ class PPersona:
         if btnGuardar:
             persona = {
                 "nombre": txtnombre.strip(),
-                "apellidos": txtapellidos.strip(),
+                "apellido": txtapellido.strip(),  # columna correcta
                 "email": txtemail.strip(),
-                "salario": float(txtsalario)
+                "salario": int(txtsalario)
             }
             resultado = self.lpersona.insertarPersona(persona)
             if resultado:
