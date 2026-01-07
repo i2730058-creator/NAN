@@ -11,11 +11,12 @@ class PPersona:
         st.title("MOOVA CLINIC")
         st.markdown("### Registro de Pacientes")
 
+        # Formulario de registro
         with st.form("formulario_registro"):
             col1, col2 = st.columns(2)
             with col1:
                 txtnombre = st.text_input("Nombre")
-                txtapellido = st.text_input("Apellido")
+                txtapellido = st.text_input("Apellido (puede ser dos palabras)")
             with col2:
                 txtemail = st.text_input("Correo electrónico")
                 txtsalario = st.number_input("Salario")
