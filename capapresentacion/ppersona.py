@@ -4,50 +4,32 @@ from capalogica.lpersona import LPersona
 class PPersona:
     def __init__(self):
         self.lpersona = LPersona()
-        self.construirInterfaz()
+        self.construir()
 
-    def construirInterfaz(self):
-        st.set_page_config(page_title="MOOVA CLINIC", layout="wide")
-        st.title("MOOVA CLINIC")
-        st.markdown("### Registro de Pacientes")
+    def construir(self):
+        st.title("Registro de Pacientes")
 
-        # Formulario de registro
-        with st.form("formulario_registro"):
-            col1, col2 = st.columns(2)
-            with col1:
-                txtnombre = st.text_input("Nombre")
-                txtapellido = st.text_input("Apellido (dos palabras permitidas)")
-            with col2:
-                txtemail = st.text_input("Correo electrónico")
-                txtsalario = st.number_input("Salario", min_value=0.0)
-            btnGuardar = st.form_submit_button("Guardar", type="primary")
+        with st.form("form_registro"):
+            nombre = st.text_input("Nombre")
+            apellido = st.text_input("Apellido (puede ser dos palabras)")
+            email = st.text_input("Correo electrónico")
+            salario = st.text_input("Salario")
+            guardar = st.form_submit_button("Guardar")
 
-        if btnGuardar:
+        if guardar:
             persona = {
-                "nombre": txtnombre.strip(),
-                "apellido": txtapellido.strip(),
-                "email": txtemail.strip(),
-                "salario": float(txtsalario)
+                "nombre": nombre.strip(),
+                "apellido": apellido.strip(),
+                "email": email.strip(),
+                "salario": salario.strip()
             }
-            resultado = self.lpersona.insertarPersona(persona)
-            if resultado:
+
+            if self.lpersona.insertarPersona(persona):
                 st.success("Registro guardado correctamente")
+                st.experimental_rerun()
             else:
-                st.error("No se pudo guardar el registro. Verifica los datos.")
+                st.error("No se pudo guardar el registro")
 
-        st.markdown("---")
-        st.markdown("### Tabla de Pacientes")
-        listaPersonas = self.lpersona.mostrarPersonas()
-        if listaPersonas:
-            st.dataframe(listaPersonas, use_container_width=True)
-        else:
-            st.info("No hay registros para mostrar.")
-
-        st.markdown("---")
-        st.markdown("### Eliminar Paciente")
-        id_eliminar = st.number_input("ID a eliminar", min_value=1, step=1)
-        if st.button("Eliminar"):
-            if self.lpersona.eliminarPersona(int(id_eliminar)):
-                st.success(f"Registro con ID {id_eliminar} eliminado")
-            else:
-                st.error("No se pudo eliminar el registro")
+        st.subheader("Tabla de Pacientes")
+        datos = self.lpersona.mostrarPersonas()
+        st.dataframe(datos, use_container_width=True)
