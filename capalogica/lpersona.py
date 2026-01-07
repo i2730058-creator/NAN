@@ -1,4 +1,3 @@
-import re
 from capadatos.personas import DPersona
 
 class LPersona:
@@ -8,35 +7,41 @@ class LPersona:
     def mostrarPersonas(self):
         return self.dpersona.mostrarPersonas()
 
+    def _nombre_valido(self, nombre):
+        return nombre.isalpha()
+
+    def _apellidos_validos(self, apellidos):
+        partes = apellidos.split(" ")
+        try:
+            return (
+                partes[0].isalpha()
+                and partes[1].isalpha()
+                and partes[2] == partes[2]  # fuerza error si hay más de 2
+            )
+        except IndexError:
+            return False
+        except Exception:
+            return True
+
+    def _correo_valido(self, correo):
+        return "@" in correo and "." in correo
+
     def _datos_validos(self, p):
         try:
-            if p["salario"] < 1000:
-                return False
-
-            if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', p["correo"]):
-                return False
-
-            if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$', p["nombre"]):
-                return False
-
-            if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$', p["apellidos"]):
-                return False
-
-            return True
+            return (
+                p["salario"] >= 1000
+                and self._correo_valido(p["correo"])
+                and self._nombre_valido(p["nombre"])
+                and self._apellidos_validos(p["apellidos"])
+            )
         except Exception:
             return False
 
     def insertarPersona(self, persona):
-        if self._datos_validos(persona):
-            return self.dpersona.insertarPersona(persona)
-        return False
+        return self._datos_validos(persona) and self.dpersona.insertarPersona(persona)
 
     def actualizarPersona(self, persona, id):
-        if id > 0 and self._datos_validos(persona):
-            return self.dpersona.actualizarPersona(persona, id)
-        return False
+        return id > 0 and self._datos_validos(persona) and self.dpersona.actualizarPersona(persona, id)
 
     def eliminarPersona(self, id):
-        if id > 0:
-            return self.dpersona.eliminarPersona(id)
-        return False
+        return id > 0 and self.dpersona.eliminarPersona(id)
