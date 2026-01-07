@@ -24,27 +24,19 @@ class DPersona:
 
     def insertarPersona(self, persona):
         try:
-            (
-                self.__db
-                .schema(self.__schema)
-                .table(self.__nombreTabla)
-                .insert(persona)
-                .execute()
-            )
+            datos = {
+                "nombre": persona.get("nombre", ""),
+                "apellido": persona.get("apellidos", ""),
+                "email": persona.get("email", "")
+            }
+            self.__db.table(self.__nombreTabla).schema(self.__schema).insert(datos).execute()
             return True
         except Exception:
             return False
 
     def eliminarPersona(self, id):
         try:
-            (
-                self.__db
-                .schema(self.__schema)
-                .table(self.__nombreTabla)
-                .delete()
-                .eq("id", id)
-                .execute()
-            )
+            self.__db.table(self.__nombreTabla).schema(self.__schema).delete().eq("id", id).execute()
             return True
         except Exception:
             return False
