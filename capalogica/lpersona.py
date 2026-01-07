@@ -8,10 +8,11 @@ class LPersona:
         return self.dpersona.mostrarPersonas()
 
     def insertarPersona(self, persona):
-        # Solo verificar que los campos obligatorios no estén vacíos
-        if persona.get("nombre") != "" and persona.get("apellido") != "" and persona.get("email") != "":
+        try:
+            persona["salario"] = float(str(persona["salario"]).replace(",", "."))
             return self.dpersona.insertarPersona(persona)
-        return False
+        except Exception:
+            return False
 
     def eliminarPersona(self, id):
         return self.dpersona.eliminarPersona(id)
