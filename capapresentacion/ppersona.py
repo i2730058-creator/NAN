@@ -10,55 +10,14 @@ class PPersona:
 
         st.set_page_config(layout="wide")
 
-        st.markdown("""
-        <style>
-        .stApp {
-            background-color: #0E1117;
-            color: #E6E6E6;
-        }
+        st.title("Registro de Pacientes")
 
-        h1, h2 {
-            color: #4FC3F7;
-        }
-
-        label, span, p {
-            color: #E6E6E6 !important;
-        }
-
-        input {
-            background-color: #1C1F26 !important;
-            color: #E6E6E6 !important;
-        }
-
-        div[data-baseweb="input"] > div {
-            background-color: #1C1F26;
-        }
-
-        button {
-            background-color: #4FC3F7 !important;
-            color: black !important;
-            border: none !important;
-        }
-
-        button:hover {
-            background-color: #29B6F6 !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-
-        st.title("Gestión de Pacientes")
-
-        with st.form("form_paciente"):
-
-            header_left, header_right = st.columns([6, 1])
-
-            with header_right:
-                editar = st.form_submit_button("✏️", use_container_width=True)
+        with st.form("form_registro"):
 
             col1, col2 = st.columns(2)
 
             with col1:
-                id_paciente = st.number_input("ID", min_value=0, step=1)
+                id_paciente = st.number_input("ID (para editar)", min_value=0, step=1)
                 nombre = st.text_input("Nombre")
                 apellido = st.text_input("Apellido")
 
@@ -66,15 +25,16 @@ class PPersona:
                 email = st.text_input("Correo electrónico")
                 presupuesto = st.text_input("Presupuesto")
 
-            acciones_izq, acciones_der = st.columns(2)
+            btn_guardar, btn_editar = st.columns([4, 1])
 
-            with acciones_izq:
-                eliminar = st.form_submit_button("🗑️ Eliminar")
+            with btn_guardar:
+                guardar = st.form_submit_button("Guardar")
 
-            with acciones_der:
-                guardar = st.form_submit_button("Guardar", type="primary")
+            with btn_editar:
+                st.markdown("<small>&nbsp;</small>", unsafe_allow_html=True)
+                editar = st.form_submit_button("Editar")
 
-        # ---------- VALIDACIÓN ----------
+        # Validación básica
         campos_completos = (
             nombre.strip() != "" and
             apellido.strip() != "" and
@@ -84,7 +44,7 @@ class PPersona:
 
         if guardar:
             if not campos_completos:
-                st.warning("Debes completar todos los campos")
+                st.warning("Completa todos los campos")
             else:
                 persona = {
                     "nombre": nombre.strip(),
@@ -96,11 +56,11 @@ class PPersona:
                     st.success("Paciente registrado")
                     st.rerun()
                 else:
-                    st.error("Datos inválidos")
+                    st.error("No se pudo guardar")
 
         if editar:
             if id_paciente == 0 or not campos_completos:
-                st.warning("Completa todos los campos e ingresa el ID")
+                st.warning("Ingresa el ID y completa todos los campos")
             else:
                 persona = {
                     "id": int(id_paciente),
@@ -113,11 +73,23 @@ class PPersona:
                 st.success("Paciente actualizado")
                 st.rerun()
 
+        st.divider()
+
+        st.subheader("Eliminar paciente")
+
+        col_del_1, col_del_2 = st.columns([3, 1])
+
+        with col_del_1:
+            id_eliminar = st.number_input("ID a eliminar", min_value=0, step=1, key="del")
+
+        with col_del_2:
+            eliminar = st.button("Eliminar")
+
         if eliminar:
-            if id_paciente == 0:
-                st.warning("Ingresa el ID a eliminar")
+            if id_eliminar == 0:
+                st.warning("Ingresa un ID válido")
             else:
-                self.lpersona.eliminarPersona(int(id_paciente))
+                self.lpersona.eliminarPersona(int(id_eliminar))
                 st.success("Paciente eliminado")
                 st.rerun()
 
