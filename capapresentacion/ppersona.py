@@ -34,15 +34,15 @@ class PPersona:
             background-color: #1C1F26;
         }
 
-        button[kind="primary"] {
-            background-color: #4FC3F7;
-            color: black;
+        button {
+            background-color: #4FC3F7 !important;
+            color: black !important;
             font-weight: bold;
-            border: none;
+            border: none !important;
         }
 
-        button[kind="primary"]:hover {
-            background-color: #29B6F6;
+        button:hover {
+            background-color: #29B6F6 !important;
         }
         </style>
         """, unsafe_allow_html=True)
@@ -50,25 +50,25 @@ class PPersona:
         st.title("Gestión de Pacientes")
 
         with st.form("form_paciente"):
+
+            top_left, top_right = st.columns([5, 1])
+
+            with top_right:
+                actualizar = st.form_submit_button("✏️")
+                eliminar = st.form_submit_button("🗑️")
+
             col1, col2 = st.columns(2)
 
             with col1:
-                id_paciente = st.number_input("ID (solo para editar/eliminar)", min_value=0, step=1)
+                id_paciente = st.number_input("ID (editar o eliminar)", min_value=0, step=1)
                 nombre = st.text_input("Nombre")
                 apellido = st.text_input("Apellido")
-            
+
             with col2:
                 email = st.text_input("Correo electrónico")
                 presupuesto = st.text_input("Presupuesto")
 
-            colb1, colb2, colb3 = st.columns(3)
-
-            with colb1:
-                guardar = st.form_submit_button("Guardar", type="primary")
-            with colb2:
-                actualizar = st.form_submit_button("Actualizar", type="primary")
-            with colb3:
-                eliminar = st.form_submit_button("Eliminar", type="primary")
+            guardar = st.form_submit_button("Guardar", type="primary")
 
         # ---------- ACCIONES ----------
         if guardar:
