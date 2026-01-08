@@ -3,12 +3,12 @@ from conexion import supabase
 class DPersona:
     def __init__(self):
         self.db = supabase
-        self.tabla = "empleados"
+        self.tabla = "pacientes"
 
     def mostrarPersonas(self):
         try:
             res = self.db.table(self.tabla).select(
-                "id, nombre, apellido, email, salario"
+                "id, nombre, apellido, email, presupuesto"
             ).execute()
             return res.data
         except Exception:
@@ -20,7 +20,7 @@ class DPersona:
                 "nombre": persona["nombre"],
                 "apellido": persona["apellido"],
                 "email": persona["email"],
-                "salario": persona["salario"]
+                "presupuesto": persona["presupuesto"]
             }).execute()
             return True
         except Exception:
