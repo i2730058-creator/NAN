@@ -4,11 +4,6 @@ from capalogica.lpersona import LPersona
 class PPersona:
     def __init__(self):
         self.lpersona = LPersona()
-        if "modo_edicion" not in st.session_state:
-            st.session_state.modo_edicion = False
-        if "persona_editando" not in st.session_state:
-            st.session_state.persona_editando = {}
-
         self.construir()
 
     def construir(self):
@@ -16,73 +11,49 @@ class PPersona:
         st.set_page_config(layout="wide")
         st.title("Registro de Pacientes")
 
-        col1, col2 = st.columns(2)
+        with st.form("form_registro"):
+            nombre = st.text_input("Nombre")
+            apellido = st.text_input("Apellido (puede ser dos palabras)")
+            email = st.text_input("Correo electrónico")
+            presupuesto = st.number_input("Presupuesto", min_value=0.0)
+            guardar = st.form_submit_button("Guardar")
 
-        with col1:
-            id_paciente = st.number_input("ID del paciente", min_value=0, step=1)
+        if guardar:
+            if (
+                nombre == "" or
+                apellido == "" or
+                email == "" or
+                presupuesto <= 0
+            ):
+                st.warning("Complete todos los campos correctamente")
+            else:
+                persona = {
+                    "nombre": nombre,
+                    "apellido": apellido,
+                    "email": email,
+                    "presupuesto": presupuesto
+                }
 
-        with col2:
-            editar = st.button("Editar")
-
-        if editar:
-            datos = self.lpersona.mostrarPersonas()
-            for p in datos:
-                if p["id"] == id_paciente:
-                    st.session_state.persona_editando = p
-                    st.session_state.modo_edicion = True
-                    break
-
-        nombre = st.text_input(
-            "Nombre",
-            value=st.session_state.persona_editando.get("nombre", "")
-        )
-        apellido = st.text_input(
-            "Apellido",
-            value=st.session_state.persona_editando.get("apellido", "")
-        )
-        email = st.text_input(
-            "Correo electrónico",
-            value=st.session_state.persona_editando.get("email", "")
-        )
-        presupuesto = st.text_input(
-            "Presupuesto",
-            value=str(st.session_state.persona_editando.get("presupuesto", ""))
-        )
-
-        if st.session_state.modo_edicion:
-            guardar = st.button("Guardar cambios")
-
-            if guardar:
-                if (
-                    nombre.strip() == "" or
-                    apellido.strip() == "" or
-                    email.strip() == "" or
-                    presupuesto.strip() == ""
-                ):
-                    st.warning("Completa todos los campos")
-                else:
-                    persona = {
-                        "id": id_paciente,
-                        "nombre": nombre.strip(),
-                        "apellido": apellido.strip(),
-                        "email": email.strip(),
-                        "presupuesto": presupuesto.strip()
-                    }
-                    self.lpersona.actualizarPersona(persona)
-                    st.success("Paciente actualizado")
-                    st.session_state.modo_edicion = False
-                    st.session_state.persona_editando = {}
+                if self.lpersona.insertarPersona(persona):
+                    st.success("Paciente registrado")
                     st.rerun()
+                else:
+                    st.error("No se pudo registrar")
 
         st.divider()
 
-        st.subheader("Eliminar paciente")
-        id_eliminar = st.number_input("ID a eliminar", min_value=0, step=1, key="del")
-        if st.button("Eliminar"):
-            if id_eliminar > 0:
-                self.lpersona.eliminarPersona(id_eliminar)
-                st.success("Paciente eliminado")
-                st.rerun()
+        st.subheader("Buscar paciente")
+        filtro = st.text_input("Buscar por nombre, apellido o correo")
+
+        datos = self.lpersona.mostrarPersonas()
+
+        if filtro != "":
+            datos = [
+                p for p in datos
+                if filtro.lower() in p["nombre"].lower()
+                or filtro.lower() in p["apellido"].lower()
+                or filtro.lower() in p["email"].lower()
+            ]
 
         st.subheader("Listado de pacientes")
-        st.dataframe(self.lpersona.mostrarPersonas(), use_container_width=True)
+        st.dataframe(datos, use_container_width=True)
