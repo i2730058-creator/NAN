@@ -2,43 +2,39 @@ from capadatos.personas import DPersona
 
 class LPersona:
     def __init__(self):
-        self.dpersona = DPersona()
+        self.__capadatos = DPersona()
+
+    def nuevaPersona(self, persona: dict):
+        if not self._datosCompletos(persona):
+            return False
+
+        return self.__capadatos.insertarPersona(persona)
 
     def mostrarPersonas(self):
-        return self.dpersona.mostrarPersonas()
+        return self.__capadatos.mostrarPersonas()
 
-    def _nombre_valido(self, nombre):
-        return nombre.replace(" ", "").isalpha()
+    def actualizarPersona(self, persona: dict):
+        if "id" not in persona:
+            return False
 
-    def _apellido_valido(self, apellido):
-        return apellido.replace(" ", "").isalpha()
+        if not self._datosCompletos(persona):
+            return False
 
-    def _email_valido(self, email):
-        return "@" in email and "." in email
+        return self.__capadatos.actualizarPersona(persona)
 
-    def _presupuesto_valido(self, presupuesto):
+    def eliminarPersona(self, id: int):
+        if id <= 0:
+            return False
+
+        return self.__capadatos.eliminarPersona(id)
+
+    def _datosCompletos(self, persona: dict):
         try:
-            return float(presupuesto) >= 0
-        except:
+            return (
+                persona["nombre"] != "" and
+                persona["apellido"] != "" and
+                persona["email"] != "" and
+                persona["presupuesto"] != ""
+            )
+        except Exception:
             return False
-
-    def insertarPersona(self, persona):
-        if not self._nombre_valido(persona["nombre"]):
-            return False
-        if not self._apellido_valido(persona["apellido"]):
-            return False
-        if not self._email_valido(persona["email"]):
-            return False
-        if not self._presupuesto_valido(persona["presupuesto"]):
-            return False
-
-        persona["presupuesto"] = float(persona["presupuesto"])
-        return self.dpersona.insertarPersona(persona)
-
-    def actualizarPersona(self, persona):
-        if persona["id"] <= 0:
-            return False
-        return self.insertarPersona(persona) and self.dpersona.actualizarPersona(persona)
-
-    def eliminarPersona(self, id):
-        return id > 0 and self.dpersona.eliminarPersona(id)
