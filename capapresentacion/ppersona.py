@@ -17,15 +17,15 @@ class PPersona:
             color: #E6E6E6;
         }
 
-        h1, h2, h3 {
+        h1, h2 {
             color: #4FC3F7;
         }
 
-        label, p, span {
+        label, span, p {
             color: #E6E6E6 !important;
         }
 
-        input, textarea {
+        input {
             background-color: #1C1F26 !important;
             color: #E6E6E6 !important;
         }
@@ -49,66 +49,63 @@ class PPersona:
 
         st.title("Gestión de Pacientes")
 
-        col1, col2 = st.columns(2)
+        with st.form("form_paciente"):
+            col1, col2 = st.columns(2)
 
-        # -------- REGISTRO --------
-        with col1:
-            st.subheader("Registrar paciente")
-
-            with st.form("form_registro"):
+            with col1:
+                id_paciente = st.number_input("ID (solo para editar/eliminar)", min_value=0, step=1)
                 nombre = st.text_input("Nombre")
                 apellido = st.text_input("Apellido")
-                email = st.text_input("Correo")
+            
+            with col2:
+                email = st.text_input("Correo electrónico")
                 presupuesto = st.text_input("Presupuesto")
+
+            colb1, colb2, colb3 = st.columns(3)
+
+            with colb1:
                 guardar = st.form_submit_button("Guardar", type="primary")
+            with colb2:
+                actualizar = st.form_submit_button("Actualizar", type="primary")
+            with colb3:
+                eliminar = st.form_submit_button("Eliminar", type="primary")
 
-            if guardar:
-                if not nombre or not apellido or not email or not presupuesto:
-                    st.warning("Todos los campos son obligatorios")
+        # ---------- ACCIONES ----------
+        if guardar:
+            if not nombre or not apellido or not email or not presupuesto:
+                st.warning("Completa todos los campos")
+            else:
+                persona = {
+                    "nombre": nombre.strip(),
+                    "apellido": apellido.strip(),
+                    "email": email.strip(),
+                    "presupuesto": presupuesto.strip()
+                }
+                if self.lpersona.nuevaPersona(persona):
+                    st.success("Paciente registrado")
+                    st.rerun()
                 else:
-                    persona = {
-                        "nombre": nombre,
-                        "apellido": apellido,
-                        "email": email,
-                        "presupuesto": presupuesto
-                    }
+                    st.error("Datos inválidos")
 
-                    if self.lpersona.nuevaPersona(persona):
-                        st.success("Paciente registrado")
-                        st.rerun()
-                    else:
-                        st.error("Datos inválidos")
-
-        # -------- EDITAR / ELIMINAR --------
-        with col2:
-            st.subheader("Editar / Eliminar paciente")
-
-            with st.form("form_editar"):
-                id_paciente = st.number_input("ID", min_value=1, step=1)
-                nombre_e = st.text_input("Nuevo nombre")
-                apellido_e = st.text_input("Nuevo apellido")
-                email_e = st.text_input("Nuevo correo")
-                presupuesto_e = st.text_input("Nuevo presupuesto")
-
-                colb1, colb2 = st.columns(2)
-                with colb1:
-                    actualizar = st.form_submit_button("Actualizar", type="primary")
-                with colb2:
-                    eliminar = st.form_submit_button("Eliminar", type="primary")
-
-            if actualizar:
+        if actualizar:
+            if id_paciente == 0:
+                st.warning("Ingresa el ID para actualizar")
+            else:
                 persona = {
                     "id": int(id_paciente),
-                    "nombre": nombre_e,
-                    "apellido": apellido_e,
-                    "email": email_e,
-                    "presupuesto": presupuesto_e
+                    "nombre": nombre.strip(),
+                    "apellido": apellido.strip(),
+                    "email": email.strip(),
+                    "presupuesto": presupuesto.strip()
                 }
                 self.lpersona.actualizarPersona(persona)
                 st.success("Paciente actualizado")
                 st.rerun()
 
-            if eliminar:
+        if eliminar:
+            if id_paciente == 0:
+                st.warning("Ingresa el ID para eliminar")
+            else:
                 self.lpersona.eliminarPersona(int(id_paciente))
                 st.success("Paciente eliminado")
                 st.rerun()
