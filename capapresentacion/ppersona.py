@@ -7,6 +7,32 @@ class PPersona:
         self.construir()
 
     def construir(self):
+        st.markdown(
+            """
+            <style>
+            .stApp {
+                background-color: white;
+            }
+
+            h1, h2 {
+                color: #1CA3EC;
+            }
+
+            button[kind="primary"] {
+                background-color: #1CA3EC;
+                border: none;
+                color: white;
+                font-weight: bold;
+            }
+
+            button[kind="primary"]:hover {
+                background-color: #1485C6;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+
         st.title("Registro de Pacientes")
 
         with st.form("form_registro"):
@@ -14,21 +40,24 @@ class PPersona:
             apellido = st.text_input("Apellido (puede ser dos palabras)")
             email = st.text_input("Correo electrónico")
             presupuesto = st.text_input("Presupuesto")
-            guardar = st.form_submit_button("Guardar")
+            guardar = st.form_submit_button("Guardar", type="primary")
 
         if guardar:
-            persona = {
-                "nombre": nombre,
-                "apellido": apellido,
-                "email": email,
-                "presupuesto": presupuesto
-            }
-
-            if self.lpersona.nuevaPersona(persona):
-                st.success("Registro guardado correctamente")
-                st.rerun()
+            if nombre == "" or apellido == "" or email == "" or presupuesto == "":
+                st.warning("Todos los campos son obligatorios")
             else:
-                st.error("No se pudo guardar el registro")
+                persona = {
+                    "nombre": nombre,
+                    "apellido": apellido,
+                    "email": email,
+                    "presupuesto": presupuesto
+                }
+
+                if self.lpersona.nuevaPersona(persona):
+                    st.success("Registro guardado correctamente")
+                    st.rerun()
+                else:
+                    st.error("Datos inválidos. Verifique la información ingresada")
 
         st.subheader("Tabla de Pacientes")
         datos = self.lpersona.mostrarPersona()
