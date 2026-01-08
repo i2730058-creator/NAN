@@ -1,34 +1,12 @@
 from capadatos.personas import DPersona
 
 class LPersona:
+    __capadatos: DPersona
+
     def __init__(self):
-        self.dpersona = DPersona()
+        self.__capadatos = DPersona()
 
-    def mostrarPersonas(self):
-        return self.dpersona.mostrarPersonas()
-
-    def _nombre_valido(self, nombre):
-        return nombre.replace(" ", "").isalpha()
-
-    def _apellido_valido(self, apellido):
-        partes = apellido.split(" ")
-        if len(partes) < 1:
-            return False
-        for p in partes:
-            if not p.isalpha():
-                return False
-        return True
-
-    def _email_valido(self, email):
-        return "@" in email and "." in email
-
-    def _salario_valido(self, salario):
-        try:
-            return float(salario) >= 0
-        except:
-            return False
-
-    def insertarPersona(self, persona):
+    def nuevaPersona(self, persona: dict):
         if not self._nombre_valido(persona["nombre"]):
             return False
 
@@ -38,11 +16,36 @@ class LPersona:
         if not self._email_valido(persona["email"]):
             return False
 
-        if not self._salario_valido(persona["salario"]):
+        if not self._presupuesto_valido(persona["presupuesto"]):
             return False
 
-        persona["salario"] = float(persona["salario"])
-        return self.dpersona.insertarPersona(persona)
+        persona["presupuesto"] = float(persona["presupuesto"])
+        return self.__capadatos.insertarPersona(persona)
 
-    def eliminarPersona(self, id):
-        return id > 0 and self.dpersona.eliminarPersona(id)
+    def mostrarPersona(self):
+        return self.__capadatos.mostrarPersonas()
+
+    def actualizarPersona(self, persona: dict, id: int):
+        return self.__capadatos.actualizarPersona(persona, id)
+
+    def eliminarPersona(self, id: int):
+        return self.__capadatos.eliminarPersona(id)
+
+    def _nombre_valido(self, nombre):
+        return nombre.replace(" ", "").isalpha()
+
+    def _apellido_valido(self, apellido):
+        partes = apellido.split(" ")
+        for p in partes:
+            if p == "" or not p.isalpha():
+                return False
+        return True
+
+    def _email_valido(self, email):
+        return "@" in email and "." in email
+
+    def _presupuesto_valido(self, presupuesto):
+        try:
+            return float(presupuesto) >= 0
+        except:
+            return False
