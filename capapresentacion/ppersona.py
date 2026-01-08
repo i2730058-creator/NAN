@@ -3,57 +3,82 @@ from capalogica.lpersona import LPersona
 
 class PPersona:
     def __init__(self):
-        self.lpersona = LPersona()
-        self.construir()
+        self.logica = LPersona()
+        self.ui()
 
-    def construir(self):
-
+    def ui(self):
         st.set_page_config(layout="wide")
-        st.title("Registro de Pacientes")
+        st.title("Clínica – Gestión de Pacientes")
 
-        with st.form("form_registro"):
+        st.subheader("Registro / Edición de Pacientes")
+
+        col1, col2 = st.columns([2, 1])
+
+        with col1:
+            id_editar = st.number_input("ID (solo para editar)", min_value=0, step=1)
             nombre = st.text_input("Nombre")
             apellido = st.text_input("Apellido (puede ser dos palabras)")
             email = st.text_input("Correo electrónico")
             presupuesto = st.number_input("Presupuesto", min_value=0.0)
-            guardar = st.form_submit_button("Guardar")
 
-        if guardar:
-            if (
-                nombre == "" or
-                apellido == "" or
-                email == "" or
-                presupuesto <= 0
-            ):
-                st.warning("Complete todos los campos correctamente")
-            else:
-                persona = {
-                    "nombre": nombre,
-                    "apellido": apellido,
-                    "email": email,
-                    "presupuesto": presupuesto
-                }
+            col_btn1, col_btn2 = st.columns(2)
 
-                if self.lpersona.insertarPersona(persona):
-                    st.success("Paciente registrado")
+            with col_btn1:
+                if st.button("Guardar"):
+                    if nombre and apellido and email and presupuesto > 0:
+                        persona = {
+                            "nombre": nombre,
+                            "apellido": apellido,
+                            "email": email,
+                            "presupuesto": presupuesto
+                        }
+                        self.logica.nuevaPersona(persona)
+                        st.success("Paciente registrado")
+                        st.rerun()
+                    else:
+                        st.warning("Complete todos los campos")
+
+            with col_btn2:
+                if st.button("Actualizar"):
+                    if id_editar > 0 and nombre and apellido and email and presupuesto > 0:
+                        persona = {
+                            "nombre": nombre,
+                            "apellido": apellido,
+                            "email": email,
+                            "presupuesto": presupuesto
+                        }
+                        self.logica.actualizarPersona(persona, id_editar)
+                        st.success("Paciente actualizado")
+                        st.rerun()
+                    else:
+                        st.warning("Ingrese ID y todos los datos")
+
+        with col2:
+            st.subheader("Eliminar paciente")
+            id_eliminar = st.number_input("ID a eliminar", min_value=0, step=1)
+
+            if st.button("Eliminar"):
+                if id_eliminar > 0:
+                    self.logica.eliminarPersona(id_eliminar)
+                    st.success("Paciente eliminado")
                     st.rerun()
                 else:
-                    st.error("No se pudo registrar")
+                    st.warning("Ingrese un ID válido")
 
         st.divider()
 
-        st.subheader("Buscar paciente")
-        filtro = st.text_input("Buscar por nombre, apellido o correo")
+        st.subheader("Listado de Pacientes")
 
-        datos = self.lpersona.mostrarPersonas()
+        datos = self.logica.mostrarPersona()
 
-        if filtro != "":
+        buscar = st.text_input("Buscar por nombre, apellido o correo")
+
+        if buscar:
             datos = [
-                p for p in datos
-                if filtro.lower() in p["nombre"].lower()
-                or filtro.lower() in p["apellido"].lower()
-                or filtro.lower() in p["email"].lower()
+                d for d in datos
+                if buscar.lower() in d["nombre"].lower()
+                or buscar.lower() in d["apellido"].lower()
+                or buscar.lower() in d["email"].lower()
             ]
 
-        st.subheader("Listado de pacientes")
         st.dataframe(datos, use_container_width=True)
