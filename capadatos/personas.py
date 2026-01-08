@@ -9,12 +9,12 @@ class DPersona:
         try:
             res = self.db.table(self.tabla).select(
                 "id, nombre, apellido, email, presupuesto"
-            ).order("id").execute()
+            ).execute()
             return res.data
-        except:
+        except Exception:
             return []
 
-    def insertarPersona(self, persona):
+    def insertarPersona(self, persona: dict):
         try:
             self.db.table(self.tabla).insert({
                 "nombre": persona["nombre"],
@@ -23,10 +23,10 @@ class DPersona:
                 "presupuesto": persona["presupuesto"]
             }).execute()
             return True
-        except:
+        except Exception:
             return False
 
-    def actualizarPersona(self, persona):
+    def actualizarPersona(self, persona: dict):
         try:
             self.db.table(self.tabla).update({
                 "nombre": persona["nombre"],
@@ -35,12 +35,12 @@ class DPersona:
                 "presupuesto": persona["presupuesto"]
             }).eq("id", persona["id"]).execute()
             return True
-        except:
+        except Exception:
             return False
 
-    def eliminarPersona(self, id):
+    def eliminarPersona(self, id: int):
         try:
             self.db.table(self.tabla).delete().eq("id", id).execute()
             return True
-        except:
+        except Exception:
             return False
