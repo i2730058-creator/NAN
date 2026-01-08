@@ -37,7 +37,6 @@ class PPersona:
         button {
             background-color: #4FC3F7 !important;
             color: black !important;
-            font-weight: bold;
             border: none !important;
         }
 
@@ -51,16 +50,15 @@ class PPersona:
 
         with st.form("form_paciente"):
 
-            top_left, top_right = st.columns([5, 1])
+            header_left, header_right = st.columns([6, 1])
 
-            with top_right:
-                actualizar = st.form_submit_button("✏️")
-                eliminar = st.form_submit_button("🗑️")
+            with header_right:
+                editar = st.form_submit_button("✏️", use_container_width=True)
 
             col1, col2 = st.columns(2)
 
             with col1:
-                id_paciente = st.number_input("ID (editar o eliminar)", min_value=0, step=1)
+                id_paciente = st.number_input("ID", min_value=0, step=1)
                 nombre = st.text_input("Nombre")
                 apellido = st.text_input("Apellido")
 
@@ -68,12 +66,25 @@ class PPersona:
                 email = st.text_input("Correo electrónico")
                 presupuesto = st.text_input("Presupuesto")
 
-            guardar = st.form_submit_button("Guardar", type="primary")
+            acciones_izq, acciones_der = st.columns(2)
 
-        # ---------- ACCIONES ----------
+            with acciones_izq:
+                eliminar = st.form_submit_button("🗑️ Eliminar")
+
+            with acciones_der:
+                guardar = st.form_submit_button("Guardar", type="primary")
+
+        # ---------- VALIDACIÓN ----------
+        campos_completos = (
+            nombre.strip() != "" and
+            apellido.strip() != "" and
+            email.strip() != "" and
+            presupuesto.strip() != ""
+        )
+
         if guardar:
-            if not nombre or not apellido or not email or not presupuesto:
-                st.warning("Completa todos los campos")
+            if not campos_completos:
+                st.warning("Debes completar todos los campos")
             else:
                 persona = {
                     "nombre": nombre.strip(),
@@ -87,9 +98,9 @@ class PPersona:
                 else:
                     st.error("Datos inválidos")
 
-        if actualizar:
-            if id_paciente == 0:
-                st.warning("Ingresa el ID para actualizar")
+        if editar:
+            if id_paciente == 0 or not campos_completos:
+                st.warning("Completa todos los campos e ingresa el ID")
             else:
                 persona = {
                     "id": int(id_paciente),
@@ -104,12 +115,11 @@ class PPersona:
 
         if eliminar:
             if id_paciente == 0:
-                st.warning("Ingresa el ID para eliminar")
+                st.warning("Ingresa el ID a eliminar")
             else:
                 self.lpersona.eliminarPersona(int(id_paciente))
                 st.success("Paciente eliminado")
                 st.rerun()
 
         st.subheader("Listado de pacientes")
-        datos = self.lpersona.mostrarPersona()
-        st.dataframe(datos, use_container_width=True)
+        st.dataframe(self.lpersona.mostrarPersona(), use_container_width=True)
