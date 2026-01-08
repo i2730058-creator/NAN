@@ -8,6 +8,8 @@ class PPersona:
 
     def construir(self):
 
+        st.set_page_config(layout="wide")
+
         st.markdown("""
         <style>
         .stApp {
@@ -41,38 +43,76 @@ class PPersona:
 
         button[kind="primary"]:hover {
             background-color: #29B6F6;
-            color: black;
         }
-
         </style>
         """, unsafe_allow_html=True)
 
-        st.title("Registro de Pacientes")
+        st.title("Gestión de Pacientes")
 
-        with st.form("form_registro"):
-            nombre = st.text_input("Nombre")
-            apellido = st.text_input("Apellido")
-            email = st.text_input("Correo electrónico")
-            presupuesto = st.text_input("Presupuesto")
-            guardar = st.form_submit_button("Guardar", type="primary")
+        col1, col2 = st.columns(2)
 
-        if guardar:
-            if not nombre or not apellido or not email or not presupuesto:
-                st.warning("Todos los campos son obligatorios")
-            else:
-                persona = {
-                    "nombre": nombre.strip(),
-                    "apellido": apellido.strip(),
-                    "email": email.strip(),
-                    "presupuesto": presupuesto.strip()
-                }
+        # -------- REGISTRO --------
+        with col1:
+            st.subheader("Registrar paciente")
 
-                if self.lpersona.nuevaPersona(persona):
-                    st.success("Paciente registrado correctamente")
-                    st.rerun()
+            with st.form("form_registro"):
+                nombre = st.text_input("Nombre")
+                apellido = st.text_input("Apellido")
+                email = st.text_input("Correo")
+                presupuesto = st.text_input("Presupuesto")
+                guardar = st.form_submit_button("Guardar", type="primary")
+
+            if guardar:
+                if not nombre or not apellido or not email or not presupuesto:
+                    st.warning("Todos los campos son obligatorios")
                 else:
-                    st.error("Los datos ingresados no son válidos")
+                    persona = {
+                        "nombre": nombre,
+                        "apellido": apellido,
+                        "email": email,
+                        "presupuesto": presupuesto
+                    }
 
-        st.subheader("Lista de Pacientes")
+                    if self.lpersona.nuevaPersona(persona):
+                        st.success("Paciente registrado")
+                        st.rerun()
+                    else:
+                        st.error("Datos inválidos")
+
+        # -------- EDITAR / ELIMINAR --------
+        with col2:
+            st.subheader("Editar / Eliminar paciente")
+
+            with st.form("form_editar"):
+                id_paciente = st.number_input("ID", min_value=1, step=1)
+                nombre_e = st.text_input("Nuevo nombre")
+                apellido_e = st.text_input("Nuevo apellido")
+                email_e = st.text_input("Nuevo correo")
+                presupuesto_e = st.text_input("Nuevo presupuesto")
+
+                colb1, colb2 = st.columns(2)
+                with colb1:
+                    actualizar = st.form_submit_button("Actualizar", type="primary")
+                with colb2:
+                    eliminar = st.form_submit_button("Eliminar", type="primary")
+
+            if actualizar:
+                persona = {
+                    "id": int(id_paciente),
+                    "nombre": nombre_e,
+                    "apellido": apellido_e,
+                    "email": email_e,
+                    "presupuesto": presupuesto_e
+                }
+                self.lpersona.actualizarPersona(persona)
+                st.success("Paciente actualizado")
+                st.rerun()
+
+            if eliminar:
+                self.lpersona.eliminarPersona(int(id_paciente))
+                st.success("Paciente eliminado")
+                st.rerun()
+
+        st.subheader("Listado de pacientes")
         datos = self.lpersona.mostrarPersona()
         st.dataframe(datos, use_container_width=True)
