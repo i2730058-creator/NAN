@@ -7,49 +7,93 @@ class PPersona:
         self.construir()
 
     def construir(self):
-        st.set_page_config(layout="wide")
-        st.title("MOOVA CLINIC – Registro de Pacientes")
+        st.title("Registro de Pacientes")
 
-        col_form, col_delete = st.columns([3, 1])
+        if "editando" not in st.session_state:
+            st.session_state.editando = False
+        if "persona_edit" not in st.session_state:
+            st.session_state.persona_edit = {}
 
-        with col_form:
-            st.subheader("Datos del paciente")
+        col1, col2 = st.columns([2, 1])
 
-            nombre = st.text_input("Nombre")
-            apellido = st.text_input("Apellido")
-            email = st.text_input("Correo electrónico")
-            presupuesto = st.number_input("Presupuesto", min_value=0.0)
+        with col1:
+            nombre = st.text_input(
+                "Nombre",
+                value=st.session_state.persona_edit.get("nombre", "")
+            )
+            apellido = st.text_input(
+                "Apellido",
+                value=st.session_state.persona_edit.get("apellido", "")
+            )
+            email = st.text_input(
+                "Correo electrónico",
+                value=st.session_state.persona_edit.get("email", "")
+            )
+            presupuesto = st.text_input(
+                "Presupuesto",
+                value=st.session_state.persona_edit.get("presupuesto", "")
+            )
 
-            if st.button("Guardar"):
-                if not nombre or not apellido or not email:
-                    st.warning("Complete todos los campos")
-                else:
+            if st.session_state.editando:
+                if st.button("Actualizar"):
                     persona = {
-                        "nombre": nombre.strip(),
-                        "apellido": apellido.strip(),
-                        "email": email.strip(),
+                        "id": st.session_state.persona_edit["id"],
+                        "nombre": nombre,
+                        "apellido": apellido,
+                        "email": email,
                         "presupuesto": presupuesto
                     }
 
-                    if self.lpersona.insertarPersona(persona):
-                        st.success("Paciente registrado")
+                    if self.lpersona.actualizarPersona(persona):
+                        st.session_state.editando = False
+                        st.session_state.persona_edit = {}
                         st.rerun()
-                    else:
-                        st.error("No se pudo guardar")
+            else:
+                if st.button("Guardar"):
+                    persona = {
+                        "nombre": nombre,
+                        "apellido": apellido,
+                        "email": email,
+                        "presupuesto": presupuesto
+                    }
 
-        with col_delete:
-            st.subheader("Eliminar paciente")
-            id_eliminar = st.number_input("ID a eliminar", min_value=1, step=1)
-
-            if st.button("Eliminar"):
-                if self.lpersona.eliminarPersona(id_eliminar):
-                    st.success("Paciente eliminado")
-                    st.rerun()
-                else:
-                    st.error("Error al eliminar")
+                    if self.lpersona.nuevaPersona(persona):
+                        st.rerun()
 
         st.divider()
-        st.subheader("Listado de pacientes")
+
+        st.subheader("Buscar paciente")
+        texto_buscar = st.text_input("Buscar por nombre o apellido")
 
         datos = self.lpersona.mostrarPersonas()
+
+        if texto_buscar != "":
+            datos = [
+                p for p in datos
+                if texto_buscar.lower() in p["nombre"].lower()
+                or texto_buscar.lower() in p["apellido"].lower()
+            ]
+
+        st.subheader("Listado de Pacientes")
         st.dataframe(datos, use_container_width=True)
+
+        st.divider()
+
+        st.subheader("Editar paciente")
+        id_editar = st.number_input("ID a editar", min_value=0, step=1)
+
+        if st.button("Cargar datos"):
+            for p in self.lpersona.mostrarPersonas():
+                if p["id"] == id_editar:
+                    st.session_state.persona_edit = p
+                    st.session_state.editando = True
+                    st.rerun()
+
+        st.divider()
+
+        st.subheader("Eliminar paciente")
+        id_eliminar = st.number_input("ID a eliminar", min_value=0, step=1, key="del")
+
+        if st.button("Eliminar"):
+            self.lpersona.eliminarPersona(id_eliminar)
+            st.rerun()
