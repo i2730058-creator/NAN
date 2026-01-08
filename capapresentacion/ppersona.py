@@ -1,43 +1,16 @@
-with col1:
-    nombre = st.text_input("Nombre")
-    apellido = st.text_input("Apellido (puede ser dos palabras)")
-    email = st.text_input("Correo electrónico")
-    presupuesto = st.number_input("Presupuesto", min_value=0.0)
+def construir(self):
+    st.title("Registro de Pacientes")
 
-    col_btn1, col_btn2 = st.columns(2)
+    col1, col2 = st.columns([2, 1])  # ← AQUÍ se crean
 
-    with col_btn1:
+    with col1:
+        nombre = st.text_input("Nombre")
+        apellido = st.text_input("Apellido")
+        email = st.text_input("Correo electrónico")
+        presupuesto = st.number_input("Presupuesto", min_value=0.0)
+
         if st.button("Guardar"):
-            if nombre and apellido and email and presupuesto > 0:
-                persona = {
-                    "nombre": nombre,
-                    "apellido": apellido,
-                    "email": email,
-                    "presupuesto": presupuesto
-                }
-                self.logica.nuevaPersona(persona)
-                st.success("Paciente registrado")
-                st.rerun()
-            else:
-                st.warning("Complete todos los campos")
+            pass
 
-    with col_btn2:
-        id_editar = st.number_input(
-            "ID a editar",
-            min_value=0,
-            step=1
-        )
-
-        if st.button("Actualizar"):
-            if id_editar > 0 and nombre and apellido and email and presupuesto > 0:
-                persona = {
-                    "nombre": nombre,
-                    "apellido": apellido,
-                    "email": email,
-                    "presupuesto": presupuesto
-                }
-                self.logica.actualizarPersona(persona, id_editar)
-                st.success("Paciente actualizado")
-                st.rerun()
-            else:
-                st.warning("Ingrese ID y todos los datos")
+    with col2:
+        st.subheader("Eliminar paciente")
